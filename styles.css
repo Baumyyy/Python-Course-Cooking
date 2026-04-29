@@ -179,6 +179,46 @@ body {
     color: #ffeeee;
 }
 
+.rage-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 24px;
+}
+
+.rage-overlay.visible {
+    display: flex;
+}
+
+.rage-card {
+    text-align: center;
+    background: rgba(20, 20, 20, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 28px;
+    padding: 24px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.rage-image {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.rage-card h2 {
+    margin: 0;
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    color: #ff5959;
+}
+
 .comment-bubble {
     position: relative;
     padding: 18px 22px;

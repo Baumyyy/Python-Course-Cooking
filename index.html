@@ -40,6 +40,13 @@
         </section>
     </main>
 
+    <div class="rage-overlay" id="rage-overlay">
+        <div class="rage-card">
+            <img src="angry.png" alt="Mauricio ragebaittuu" class="rage-image">
+            <h2>Lopeta!!!!</h2>
+        </div>
+    </div>
+
     <script>
         const messages = document.getElementById('messages');
         const optionsContainer = document.getElementById('chat-options');
@@ -128,9 +135,14 @@
             if (result.gameOver) {
                 addBubble('Peli ohi. Mauricio on täysin ragebaitattu.', 'mauricio');
                 disableOptions(true);
+                showRageOverlay();
             } else {
                 disableOptions(false);
             }
+        }
+
+        function showRageOverlay() {
+            document.getElementById('rage-overlay').classList.add('visible');
         }
 
         function disableOptions(disabled) {
