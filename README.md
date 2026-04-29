@@ -1,16 +1,37 @@
-# Python-Course-Cooking
-Course group work with Python
+# Mauricio Ragebait
+Selaimessa pelattava Mauricio-ragebait-peli, jossa Python-backend vastaa käyttäjän viesteihin.
 
-## Mauricio Ragebait -peli
-Käynnistä peli komennolla:
+## Projektin rakenne
+- `app.py` — Flask-backend, joka palvelee HTML-sivua ja käsittelee viestit
+- `index.html` — chat-käyttöliittymä Mauricio-pelin selaimessa pelaamiseen
+- `styles.css` — sivun tyylit
+- `PROJECT_SPEC.md` — kurssin projektityön vaatimukset ja spesifikaatio
+- `requirements.txt` — Python-riippuvuudet
+
+## Käyttö
+Asenna riippuvuudet:
 
 ```bash
-python ragbait_game.py
+python -m pip install -r requirements.txt
 ```
 
-Tämä peli on ensimmäinen versio, jossa:
-- Mauricio on päähenkilö
-- tietokone kysyy typeriä kysymyksiä
-- pelaajan pitää pitää rauhallisuusmittari (calmness meter) riittävän korkealla
-- jos mittari laskee nollaan, peli näyttää "this is fine"
-- jos Mauricio ragebaitataan, hän huutaa "FAAH"
+Käynnistä backend:
+
+```bash
+python app.py
+```
+
+Avaa selaimessa:
+
+```
+http://127.0.0.1:5000
+```
+
+## Mitä projekti tekee
+- Pelaaja kirjoittaa provosoivia viestejä Mauriciolle.
+- Python-backend analysoi viestin ja palauttaa Mauricion vastauksen.
+- Rauhallisuusmittari muuttuu vastauksen mukaan.
+- Jos rauhallisuus laskee nollaan, Mauricio ragebaittuu kokonaan ja peli päättyy.
+
+## Huomio
+Tämä projekti käyttää oikeaa Python-backendiä, eikä komentoriviversiota enää tarvita.

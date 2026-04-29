@@ -22,8 +22,8 @@
             <div class="chat-frame">
                 <div class="chat-header">
                     <div>
-                        <h2>Keskustelu Mauricio kanssa</h2>
-                        <p>Näytä, kuinka helposti saat hänet ragebaitatuksi.</p>
+                        <h2>Sinä vs Mauricio</h2>
+                        <p>Kirjoita viesti Mauriciolle ja yritä saada hänet ragebaitattua.</p>
                     </div>
                     <div class="calmness-display">
                         <span class="calmness-meter">Rauhallisuus: <strong id="calmness-value">100</strong></span>
@@ -50,33 +50,6 @@
         const calmnessFill = document.getElementById('calmness-fill');
         let calmness = 100;
 
-        const replyRules = [
-            {
-                matcher: /kiitos|hyvä|ok|okei|selvä|kiitokset/i,
-                response: 'Mauricio: Kiitos! Yritän rentoutua.',
-                calmChange: 10
-            },
-            {
-                matcher: /paska|vitun|saatana|olet huono|et ole|typerä/i,
-                response: 'MAURICIO SAA RAGEBAITIN! FAAH!!!',
-                calmChange: -35,
-                rage: true
-            },
-            {
-                matcher: /.*/,
-                response: 'Mauricio: Huh, yritän pysyä rauhallisena.',
-                calmChange: -5
-            }
-        ];
-
-        const questions = [
-            'Miksi et tee sitä nyt heti?',
-            'Oletko taas liian hidas?',
-            'Luulitko oikeasti, että se valmistuu itsestään?',
-            'Mitä aiot tehdä, kun aikaa ei ole?',
-            'Miksi viivyttelet aina niin paljon?'
-        ];
-
         function addBubble(text, cls) {
             const bubble = document.createElement('div');
             bubble.className = `comment-bubble ${cls}`;
@@ -102,45 +75,54 @@
             }
         }
 
-        function getResponse(message) {
-            return replyRules.find(rule => rule.matcher.test(message));
+        async function sendMessage(message) {
+            const response = await fetch('/api/reply', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message, calmness })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                addBubble(`Virhe: ${error.error || 'Palvelin ei vastannut'}`, 'user');
+                return null;
+            }
+
+            return response.json();
         }
 
-        function addComputerMessage(text) {
-            addBubble(`Tietokone: "${text}"`, 'computer');
-        }
-
-        function nextQuestion() {
-            const next = questions[Math.floor(Math.random() * questions.length)];
-            addComputerMessage(next);
-        }
-
-        document.getElementById('chat-form').addEventListener('submit', event => {
+        document.getElementById('chat-form').addEventListener('submit', async event => {
             event.preventDefault();
             const text = input.value.trim();
             if (!text || calmness === 0) return;
 
-            addBubble(`Sinä: ${text}`, 'computer');
-            const rule = getResponse(text);
-            updateCalmness(rule.calmChange);
-
-            setTimeout(() => {
-                addBubble(rule.response, rule.rage ? 'mauricio rage' : 'mauricio');
-                if (calmness === 0) {
-                    addBubble('this is fine...', 'computer');
-                    input.disabled = true;
-                } else {
-                    nextQuestion();
-                }
-            }, 300);
-
+            addBubble(`Sinä: ${text}`, 'user');
             input.value = '';
-            input.focus();
+            input.disabled = true;
+
+            const result = await sendMessage(text);
+            if (!result) {
+                input.disabled = false;
+                input.focus();
+                return;
+            }
+
+            updateCalmness(result.calmChange);
+            addBubble(result.reply, result.rage ? 'mauricio rage' : 'mauricio');
+
+            if (result.gameOver) {
+                addBubble('Peli ohi. Mauricio on täysin ragebaitattu.', 'mauricio');
+                input.disabled = true;
+            } else {
+                input.disabled = false;
+                input.focus();
+            }
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            const initial = questions[Math.floor(Math.random() * questions.length)];
-            addComputerMessage(initial);
+            addBubble('Mauricio: Kirjoita provosoiva viesti ja katso, kuinka lähelle ragebaittia pääset.', 'mauricio');
             updateCalmness(0);
             input.focus();
         });

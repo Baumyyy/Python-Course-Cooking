@@ -205,6 +205,20 @@ body {
     border-color: var(--bubble-computer) transparent transparent transparent;
 }
 
+.comment-bubble.user {
+    background: rgba(255, 255, 255, 0.08);
+    color: #f7f7f7;
+    align-self: start;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.comment-bubble.user::after {
+    left: 24px;
+    bottom: -18px;
+    border-width: 18px 14px 0 14px;
+    border-color: rgba(255, 255, 255, 0.08) transparent transparent transparent;
+}
+
 .comment-bubble.mauricio {
     background: var(--bubble-mauricio);
     align-self: end;
