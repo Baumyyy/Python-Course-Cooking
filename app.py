@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, send_from_directory
 import re
 
+from characters import Mauricio
+
 app = Flask(__name__, static_folder='.', static_url_path='')
 
 CALM_PATTERNS = re.compile(r"\b(kiitos|hyvä|ok|okei|selvä|kiitokset|anteeksi|sorry)\b", re.IGNORECASE)
@@ -33,23 +35,27 @@ def reply():
         return jsonify(error='Viestikenttä ei voi olla tyhjä.'), 400
 
     if RAGE_PATTERNS.search(user_message):
-        reply_text = RESPONSES['rage']
+        mood = 'rage'
         calm_change = -35
         rage = True
     elif CALM_PATTERNS.search(user_message):
-        reply_text = RESPONSES['calm']
+        mood = 'calm'
         calm_change = 10
         rage = False
     else:
-        reply_text = RESPONSES['neutral']
+        mood = 'neutral'
         calm_change = -5
         rage = False
 
     calmness = max(0, min(calmness + calm_change, 120))
     game_over = calmness == 0
 
+    mauricio = Mauricio(RESPONSES)
+
     if game_over:
         reply_text = 'this is fine...'
+    else:
+        reply_text = mauricio.get_reply(mood)
 
     return jsonify(
         reply=reply_text,
