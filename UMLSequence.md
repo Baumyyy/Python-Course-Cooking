@@ -1,5 +1,3 @@
-# UML Sequence Diagram – Message Processing
-
 ```mermaid
 sequenceDiagram
     participant User
