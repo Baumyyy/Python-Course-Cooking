@@ -1,0 +1,130 @@
+:root {
+    --bg: #121212;
+    --surface: #1f1f1f;
+    --text: #f1f1f1;
+    --accent: #ff6f61;
+    --accent-soft: #ff8b72;
+    --bubble-computer: #2a2a72;
+    --bubble-mauricio: #2a722a;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(circle at top, #2d2d5b 0%, var(--bg) 55%);
+    color: var(--text);
+}
+
+.app-shell {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+
+.hero {
+    display: grid;
+    gap: 24px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+}
+
+.character-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+    display: grid;
+    place-items: center;
+    font-size: 48px;
+    font-weight: 700;
+    color: white;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+}
+
+.character-info h1 {
+    margin: 0 0 8px;
+    font-size: clamp(2rem, 3vw, 3rem);
+}
+
+.character-info p {
+    margin: 0;
+    max-width: 560px;
+    line-height: 1.7;
+    color: #dcdcdc;
+}
+
+.dialogue-panel {
+    display: grid;
+    gap: 20px;
+}
+
+.comment-bubble {
+    position: relative;
+    padding: 18px 22px;
+    border-radius: 28px;
+    max-width: 720px;
+    line-height: 1.6;
+    font-size: 1rem;
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.2);
+}
+
+.comment-bubble::after {
+    content: "";
+    position: absolute;
+    border-style: solid;
+}
+
+.comment-bubble.computer {
+    background: var(--bubble-computer);
+    align-self: start;
+}
+
+.comment-bubble.computer::after {
+    left: 24px;
+    bottom: -18px;
+    border-width: 18px 14px 0 14px;
+    border-color: var(--bubble-computer) transparent transparent transparent;
+}
+
+.comment-bubble.mauricio {
+    background: var(--bubble-mauricio);
+    align-self: end;
+    margin-left: auto;
+}
+
+.comment-bubble.mauricio::after {
+    right: 24px;
+    bottom: -18px;
+    border-width: 18px 14px 0 14px;
+    border-color: var(--bubble-mauricio) transparent transparent transparent;
+}
+
+.info-block {
+    margin-top: 24px;
+    padding: 22px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.info-block h2 {
+    margin-top: 0;
+}
+
+.info-block p {
+    margin: 0.75rem 0;
+    color: #d5d5d5;
+}
