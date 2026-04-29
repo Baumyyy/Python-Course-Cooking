@@ -23,7 +23,7 @@
                 <div class="chat-header">
                     <div>
                         <h2>Sinä vs Mauricio</h2>
-                        <p>Kirjoita viesti Mauriciolle ja yritä saada hänet ragebaitattua.</p>
+                        <p>Valitse viesti vaihtoehdoista ja yritä saada hänet ragebaitattua.</p>
                     </div>
                     <div class="calmness-display">
                         <span class="calmness-meter">Rauhallisuus: <strong id="calmness-value">100</strong></span>
@@ -35,20 +35,25 @@
 
                 <div class="dialogue-panel" id="messages"></div>
 
-                <form class="chat-controls" id="chat-form">
-                    <input id="chat-input" type="text" placeholder="Kirjoita viesti Mauriciolle..." autocomplete="off">
-                    <button type="submit">Lähetä</button>
-                </form>
+                <div class="chat-controls" id="chat-options"></div>
             </div>
         </section>
     </main>
 
     <script>
         const messages = document.getElementById('messages');
-        const input = document.getElementById('chat-input');
+        const optionsContainer = document.getElementById('chat-options');
         const calmnessValue = document.getElementById('calmness-value');
         const calmnessFill = document.getElementById('calmness-fill');
         let calmness = 100;
+        const predefinedMessages = [
+            'Mee töihin',
+            'Äijäl on taas sama housut päällä',
+            'N-sana',
+            'Chillaa (vaan kun Anthony sanoo)',
+            'Näytät ihan Pete Parkkoselta',
+            'Näytät Biziltä'
+        ];
 
         function addBubble(text, cls) {
             const bubble = document.createElement('div');
@@ -93,19 +98,27 @@
             return response.json();
         }
 
-        document.getElementById('chat-form').addEventListener('submit', async event => {
-            event.preventDefault();
-            const text = input.value.trim();
+        function createOptionButtons() {
+            optionsContainer.innerHTML = '';
+            predefinedMessages.forEach(text => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'message-option';
+                button.textContent = text;
+                button.dataset.message = text;
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        async function handleMessageSelection(text) {
             if (!text || calmness === 0) return;
 
             addBubble(`Sinä: ${text}`, 'user');
-            input.value = '';
-            input.disabled = true;
+            disableOptions(true);
 
             const result = await sendMessage(text);
             if (!result) {
-                input.disabled = false;
-                input.focus();
+                disableOptions(false);
                 return;
             }
 
@@ -114,17 +127,28 @@
 
             if (result.gameOver) {
                 addBubble('Peli ohi. Mauricio on täysin ragebaitattu.', 'mauricio');
-                input.disabled = true;
+                disableOptions(true);
             } else {
-                input.disabled = false;
-                input.focus();
+                disableOptions(false);
             }
+        }
+
+        function disableOptions(disabled) {
+            optionsContainer.querySelectorAll('button').forEach(button => {
+                button.disabled = disabled;
+            });
+        }
+
+        optionsContainer.addEventListener('click', event => {
+            const button = event.target.closest('button');
+            if (!button || button.disabled) return;
+            handleMessageSelection(button.dataset.message);
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            addBubble('Mauricio: Kirjoita provosoiva viesti ja katso, kuinka lähelle ragebaittia pääset.', 'mauricio');
+            createOptionButtons();
+            addBubble('Mauricio: Valitse yksi viesti vaihtoehdoista ja yritä saada minut ragebaitattua.', 'mauricio');
             updateCalmness(0);
-            input.focus();
         });
     </script>
 </body>

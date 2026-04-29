@@ -4,7 +4,10 @@ import re
 app = Flask(__name__, static_folder='.', static_url_path='')
 
 CALM_PATTERNS = re.compile(r"\b(kiitos|hyvä|ok|okei|selvä|kiitokset|anteeksi|sorry)\b", re.IGNORECASE)
-RAGE_PATTERNS = re.compile(r"\b(paska|vitun|saatana|olet huono|et ole|typerä|hitto|vittu)\b", re.IGNORECASE)
+RAGE_PATTERNS = re.compile(
+    r"\b(paska|vitun|saatana|olet huono|et ole|typerä|hitto|vittu)\b|mee töihin|sama housut|näytät ihan pete|pete parkkoselta|näytät biz|n-sana",
+    re.IGNORECASE
+)
 
 RESPONSES = {
     'calm': 'Mauricio: Kiitos. Yritän rauhoittua.',
