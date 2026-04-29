@@ -25,17 +25,15 @@
                         <h2>Keskustelu Mauricio kanssa</h2>
                         <p>Näytä, kuinka helposti saat hänet ragebaitatuksi.</p>
                     </div>
-                    <span class="calmness-meter">Rauhallisuus: <strong id="calmness-value">100</strong></span>
+                    <div class="calmness-display">
+                        <span class="calmness-meter">Rauhallisuus: <strong id="calmness-value">100</strong></span>
+                        <div class="calmness-track">
+                            <div class="calmness-fill" id="calmness-fill"></div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="dialogue-panel" id="messages">
-                    <div class="comment-bubble computer">
-                        <p>Tietokone: "Miksi et tee sitä nyt heti?"</p>
-                    </div>
-                    <div class="comment-bubble mauricio">
-                        <p>Mauricio: "Pysyn rauhallisena."</p>
-                    </div>
-                </div>
+                <div class="dialogue-panel" id="messages"></div>
 
                 <form class="chat-controls" id="chat-form">
                     <input id="chat-input" type="text" placeholder="Kirjoita viesti Mauriciolle..." autocomplete="off">
@@ -49,6 +47,7 @@
         const messages = document.getElementById('messages');
         const input = document.getElementById('chat-input');
         const calmnessValue = document.getElementById('calmness-value');
+        const calmnessFill = document.getElementById('calmness-fill');
         let calmness = 100;
 
         const replyRules = [
@@ -70,6 +69,14 @@
             }
         ];
 
+        const questions = [
+            'Miksi et tee sitä nyt heti?',
+            'Oletko taas liian hidas?',
+            'Luulitko oikeasti, että se valmistuu itsestään?',
+            'Mitä aiot tehdä, kun aikaa ei ole?',
+            'Miksi viivyttelet aina niin paljon?'
+        ];
+
         function addBubble(text, cls) {
             const bubble = document.createElement('div');
             bubble.className = `comment-bubble ${cls}`;
@@ -85,16 +92,33 @@
         function updateCalmness(change) {
             calmness = clamp(calmness + change, 0, 120);
             calmnessValue.textContent = calmness;
+            calmnessFill.style.width = `${(calmness / 120) * 100}%`;
+            calmnessFill.style.background = `linear-gradient(90deg, #7fed72 ${calmness}%, #ff7a7a)`;
+
+            if (calmness <= 30) {
+                calmnessFill.classList.add('low');
+            } else {
+                calmnessFill.classList.remove('low');
+            }
         }
 
         function getResponse(message) {
             return replyRules.find(rule => rule.matcher.test(message));
         }
 
+        function addComputerMessage(text) {
+            addBubble(`Tietokone: "${text}"`, 'computer');
+        }
+
+        function nextQuestion() {
+            const next = questions[Math.floor(Math.random() * questions.length)];
+            addComputerMessage(next);
+        }
+
         document.getElementById('chat-form').addEventListener('submit', event => {
             event.preventDefault();
             const text = input.value.trim();
-            if (!text) return;
+            if (!text || calmness === 0) return;
 
             addBubble(`Sinä: ${text}`, 'computer');
             const rule = getResponse(text);
@@ -104,10 +128,20 @@
                 addBubble(rule.response, rule.rage ? 'mauricio rage' : 'mauricio');
                 if (calmness === 0) {
                     addBubble('this is fine...', 'computer');
+                    input.disabled = true;
+                } else {
+                    nextQuestion();
                 }
             }, 300);
 
             input.value = '';
+            input.focus();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const initial = questions[Math.floor(Math.random() * questions.length)];
+            addComputerMessage(initial);
+            updateCalmness(0);
             input.focus();
         });
     </script>

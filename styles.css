@@ -90,9 +90,37 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.calmness-display {
+    display: grid;
+    gap: 10px;
+    width: 240px;
+    text-align: right;
+}
+
 .calmness-meter {
     font-weight: 700;
     color: #ffce70;
+}
+
+.calmness-track {
+    width: 100%;
+    height: 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.calmness-fill {
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.3s ease, background 0.3s ease;
+    background: linear-gradient(90deg, #7fed72 80%, #ff7a7a);
+}
+
+.calmness-fill.low {
+    background: linear-gradient(90deg, #ff9a7a 40%, #e93b3b);
 }
 
 .dialogue-panel {
