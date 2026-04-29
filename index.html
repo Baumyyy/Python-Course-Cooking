@@ -10,22 +10,106 @@
     <main class="app-shell">
         <section class="hero">
             <div class="character-card">
-                <div class="avatar">M</div>
+                <div class="avatar">
+                    <img src="maukka.jpg" alt="Mauricio" class="avatar-image">
+                </div>
                 <div class="character-info">
                     <h1>Mauricio</h1>
                     <p>Päähenkilö, joka yrittää pysyä rauhallisena.</p>
                 </div>
             </div>
 
-            <div class="dialogue-panel">
-                <div class="comment-bubble computer">
-                    <p>Tietokone: "Miksi et tee sitä nyt heti?"</p>
+            <div class="chat-frame">
+                <div class="chat-header">
+                    <div>
+                        <h2>Keskustelu Mauricio kanssa</h2>
+                        <p>Näytä, kuinka helposti saat hänet ragebaitatuksi.</p>
+                    </div>
+                    <span class="calmness-meter">Rauhallisuus: <strong id="calmness-value">100</strong></span>
                 </div>
-                <div class="comment-bubble mauricio">
-                    <p>Mauricio: "Pysyn rauhallisena."</p>
+
+                <div class="dialogue-panel" id="messages">
+                    <div class="comment-bubble computer">
+                        <p>Tietokone: "Miksi et tee sitä nyt heti?"</p>
+                    </div>
+                    <div class="comment-bubble mauricio">
+                        <p>Mauricio: "Pysyn rauhallisena."</p>
+                    </div>
                 </div>
+
+                <form class="chat-controls" id="chat-form">
+                    <input id="chat-input" type="text" placeholder="Kirjoita viesti Mauriciolle..." autocomplete="off">
+                    <button type="submit">Lähetä</button>
+                </form>
             </div>
         </section>
     </main>
+
+    <script>
+        const messages = document.getElementById('messages');
+        const input = document.getElementById('chat-input');
+        const calmnessValue = document.getElementById('calmness-value');
+        let calmness = 100;
+
+        const replyRules = [
+            {
+                matcher: /kiitos|hyvä|ok|okei|selvä|kiitokset/i,
+                response: 'Mauricio: Kiitos! Yritän rentoutua.',
+                calmChange: 10
+            },
+            {
+                matcher: /paska|vitun|saatana|olet huono|et ole|typerä/i,
+                response: 'MAURICIO SAA RAGEBAITIN! FAAH!!!',
+                calmChange: -35,
+                rage: true
+            },
+            {
+                matcher: /.*/,
+                response: 'Mauricio: Huh, yritän pysyä rauhallisena.',
+                calmChange: -5
+            }
+        ];
+
+        function addBubble(text, cls) {
+            const bubble = document.createElement('div');
+            bubble.className = `comment-bubble ${cls}`;
+            bubble.innerHTML = `<p>${text}</p>`;
+            messages.appendChild(bubble);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function clamp(value, min, max) {
+            return Math.max(min, Math.min(max, value));
+        }
+
+        function updateCalmness(change) {
+            calmness = clamp(calmness + change, 0, 120);
+            calmnessValue.textContent = calmness;
+        }
+
+        function getResponse(message) {
+            return replyRules.find(rule => rule.matcher.test(message));
+        }
+
+        document.getElementById('chat-form').addEventListener('submit', event => {
+            event.preventDefault();
+            const text = input.value.trim();
+            if (!text) return;
+
+            addBubble(`Sinä: ${text}`, 'computer');
+            const rule = getResponse(text);
+            updateCalmness(rule.calmChange);
+
+            setTimeout(() => {
+                addBubble(rule.response, rule.rage ? 'mauricio rage' : 'mauricio');
+                if (calmness === 0) {
+                    addBubble('this is fine...', 'computer');
+                }
+            }, 300);
+
+            input.value = '';
+            input.focus();
+        });
+    </script>
 </body>
 </html>
